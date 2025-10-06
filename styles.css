@@ -1,0 +1,11 @@
+.vim-hint {
+    position: absolute;
+    background: yellow;
+    color: black;
+    padding: 2px 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 3px;
+    z-index: 9999;
+  }
+  

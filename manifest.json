@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Link Navigation",
+  "version": "1.0",
+  "description": "Быстрое управление ссылками и кнопками в браузере с помощью комбинаций клавиш, вдохновлённое Vim.",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "Vim-like Navigation"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "commands": {
+    "toggle-extension": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L"
+      },
+      "description": "Включить/выключить навигацию по ссылкам"
+    },
+    "toggle-hints": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Показать/скрыть клавиши управления (подсказки)"
+    }
+  }
+}
