@@ -1,6 +1,7 @@
 let enabled = true;
 const hints = [];
-const hintKeys = "asdfghjkl";
+const hintKeys = ["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK","KeyL"];
+const hintLabels = ["a","s","d","f","g","h","j","k","l"];
 let currentInput = "";
 
 chrome.storage.local.get("enabled", (data) => {
@@ -19,11 +20,12 @@ document.addEventListener("keydown", (e) => {
 
   if (hints.length > 0) {
     e.preventDefault();
-    handleHintInput(e.key);
+    handleHintInput(e.code);
   }
 });
 
 chrome.runtime.onMessage.addListener((message) => {
+  console.log("command acti")
   if (!enabled) return;
 
   if (message.command === "toggle-hints") {
@@ -41,12 +43,12 @@ function showHints() {
   
   links.forEach((link, index) => {
     const hint = document.createElement("span");
-    hint.textContent = hintCombinations[index];
+    hint.textContent = hintCombinations[index].label;
     hint.className = "vim-hint";
     hint.style.top = `${link.getBoundingClientRect().top + window.scrollY}px`;
     hint.style.left = `${link.getBoundingClientRect().left + window.scrollX}px`;
     document.body.appendChild(hint);
-    hints.push({ key: hintCombinations[index], element: link, hint });
+    hints.push({ key: hintCombinations[index].key, element: link, hint });
   });
 
   currentInput = "";
@@ -66,23 +68,28 @@ function handleHintInput(key) {
 }
 
 function generateHintCombinations(count) {
-  const keyList = hintKeys.split("");
   let length = 1;
-
-  while (Math.pow(keyList.length, length) < count) {
-    length++;
-  }
+  while (Math.pow(hintKeys.length, length) < count) { length++; }
 
   const result = [];
   let index = 0;
 
   function getCombination(num, len) {
-    let combo = "";
-    while (combo.length < len) {
-      combo = keyList[num % keyList.length] + combo;
-      num = Math.floor(num / keyList.length);
+    let keyCombo = "";
+    let labelCombo = "";
+    let added = 0;
+
+    while (added < len) {
+      const i = num % hintKeys.length;
+
+      keyCombo = hintKeys[i] + keyCombo;
+      labelCombo = hintLabels[i] + labelCombo;
+
+      num = Math.floor(num / hintKeys.length);
+      added++;
     }
-    return combo;
+
+    return { key: keyCombo, label: labelCombo };
   }
 
   while (result.length < count) {
@@ -92,6 +99,7 @@ function generateHintCombinations(count) {
 
   return result;
 }
+
 
 function removeHints() {
   hints.forEach(({ hint }) => hint.remove());

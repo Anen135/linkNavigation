@@ -7,6 +7,7 @@ chrome.commands.onCommand.addListener((command) => {
     enabled = !enabled;
     chrome.storage.local.set({ enabled });
     chrome.action.setBadgeText({ text: enabled ? "ON" : "OFF" });
+    console.log("Turn: " + enabled)
   } else if (command === "toggle-hints") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {
